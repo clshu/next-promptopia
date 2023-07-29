@@ -10,12 +10,14 @@ const Nav = () => {
   const [providers, setProviders] = useState(null);
   const [toggleDropdown, setToggleDropdown] = useState(false);
 
+  const { data: session } = useSession();
+
   useEffect(() => {
-    const setProviders = async () => {
+    const setUpProviders = async () => {
       const providers = await getProviders();
       setProviders(providers);
     };
-    setProviders();
+    setUpProviders();
   }, []);
 
   return (
@@ -32,7 +34,7 @@ const Nav = () => {
       </Link>
       {/* Desktop sNavigation */}
       <div className="sm:flex hidden">
-        {isUserLoggedin ? (
+        {session?.user ? (
           <div className="flex gap-3 md:gap-5">
             <Link href="/create-prompt" className="black_btn">
               Create Prompt
@@ -43,7 +45,7 @@ const Nav = () => {
 
             <Link href="/profile">
               <Image
-                src="/assets/images/logo.svg"
+                src={session?.user.image}
                 alt="Profile"
                 width={37}
                 height={37}
@@ -53,8 +55,8 @@ const Nav = () => {
           </div>
         ) : (
           <>
-            {provider &&
-              Object.values(provider).map((provider) => (
+            {providers &&
+              Object.values(providers).map((provider) => (
                 <button
                   type="button"
                   key={provider.name}
@@ -70,10 +72,10 @@ const Nav = () => {
       {/* Mobile Navigation */}
       <div className="sm:hidden flex relative">
         <div className="sm:hidden flex relative">
-          {isUserLoggedin ? (
+          {session?.user ? (
             <div className="flex">
               <Image
-                src="/assets/images/logo.svg"
+                src={session?.user.image}
                 alt="Profile"
                 width={37}
                 height={37}
@@ -111,8 +113,8 @@ const Nav = () => {
             </div>
           ) : (
             <>
-              {provider &&
-                Object.values(provider).map((provider) => (
+              {providers &&
+                Object.values(providers).map((provider) => (
                   <button
                     type="button"
                     key={provider.name}
